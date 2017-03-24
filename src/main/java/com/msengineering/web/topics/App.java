@@ -21,7 +21,7 @@ public class App {
 		//forward query to google and return a list of documents
 		List<Document> results = new Search().search(terms);
 		
-		//find the most frequent n-grams
+		//find the most frequent n-grams (using apache Solr ??)
 		List<String> ngrams = new Analyzer(results).topNgrams(5, 5);
 		
 		System.out.println("Top n-grams:");
