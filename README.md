@@ -22,7 +22,8 @@ Analyse de données + traitement de données : kim
 
 ## Techniques, algorithmes et outils utilisés:
 1. Partie de collection de données:
-2. Partie d'analyse de données: Python distribution "Anacanda), language python, Tableaus software pour analyser les résultats
+2. Partie d'analyse de données: Python distribution "Anacanda), language python, Tableaus software pour analyser les résultats.
+3. Outil Jsoup: Librairie Java open source utilisée pour l'extraction et la manipulation des données dans des documents html.
 
 ## Conclusion:
 
