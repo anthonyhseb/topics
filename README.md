@@ -7,7 +7,7 @@ Nous allons procéder en deux étapes. Le première étape consiste à collectio
 
 ## Données (sources, quantité, évtl. pré-traitement, description):
 ### Phase de collection de données:
-La source de nos données sont les résultats du moteur de recherche. Le processus consiste à établir une liste de requêtes spécifiques à envoyer au moteur de recherche. Pour chaque requête, nous garderons les N meilleurs documents générés par le moteur de recherche. dans cette étapes, le premier travail de "cleaninig" est réalisé pour enlever toutes les parties inutiles(ex: publicité). L'objectif est de générer une base de données avec la structure suivante : requête(passé au moteurde recherche), url du site, contenue de site
+La source de nos données sont les résultats du moteur de recherche. Le processus consiste à établir une liste de requêtes spécifiques à envoyer au moteur de recherche. Pour chaque requête, nous garderons les N meilleurs documents générés par le moteur de recherche et les envoyer dans un fichier. Dans cette étapes, le premier travail de "cleaninig" est réalisé pour enlever toutes les parties inutiles(ex: publicité). L'objectif est de générer une base de données avec la structure suivante : requête(passé au moteurde recherche), url du site, contenue de site
 
 ### Phase d'analyse de données :
 La base, une fois créée, seront utilisée pour démarrer l'analyse. Dans cette phase, on va commencer par nettoyer les données non-déterminantes (ex: enlever le stopword, gestion de stemming, de lemmazation, de tokenization, etc.).
