@@ -12,26 +12,27 @@ La source de nos données sont les résultats du moteur de recherche. Le process
 ### Phase d'analyse de données :
 La base, une fois créée, seront utilisée pour démarrer l'analyse. Dans cette phase, on va commencer par nettoyer les données non-déterminantes (ex: enlever le stopword, gestion de stemming, de lemmazation, de tokenization, etc.).
 
-## objectif 1: affiner les temrs par topic
-=> 1.1 affiner par le poind tf-idf au lieu de présence/absence du term
-=> 1.2 reprendre les terms identifiés et re-quêter dans google
+#### objectif 1: affiner les temrs par topic
+- 1.1 Affiner le résultat en utilisant tf-idf au lieu de présence/absence du term
+- 1.2 Reprendre les terms identifiés et re-requêter dans google
 
-## objectif 2 : classer le nouveau document par topic (
+#### objectif 2 : classer le nouveau document par topic (si le temps le permettre)
 
 ## Planification, répartition du travail:
 Collection de données + traitement de données:Nirina
-Analyse de données + traitement de données : kim
+Analyse de données + traitement de données  : kim et anthony
+Objectif 1.1 => kim
+objectif 1.2 => Anthony
 
 ## Fonctionnalités / cas d’utilisation :
 
 
 ## Techniques, algorithmes et outils utilisés:
-1. Partie de collection de données: Nirina
-2. Partie d'analyse de données: 
-  1.1 kim
-  1.2 Anthony
-  Python distribution "Anacanda), language python, Tableaus software pour analyser les résultats.
-3. Outil Jsoup: Librairie Java open source utilisée pour l'extraction et la manipulation des données dans des documents html.
+- Partie de collection de données: Nirina
+Outil Jsoup: Librairie Java open source utilisée pour l'extraction et la manipulation des données dans des documents html.
+- Partie d'analyse de données: 
+Python distribution "Anacanda", language python, Tableaus software pour analyser les résultats.
+
 
 ## Conclusion:
 
