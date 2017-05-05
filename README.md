@@ -13,7 +13,7 @@ La source de nos données sont les résultats du moteur de recherche. Le process
 La base, une fois créée, seront utilisée pour démarrer l'analyse. Dans cette phase, on va commencer par nettoyer les données non-déterminantes (ex: enlever le stopword, gestion de stemming, de lemmazation, de tokenization, etc.).
 
 #### Objectif 1: affiner les temrs par topic
-- 1.1 Affiner le résultat en utilisant tf-idf au lieu de présence/absence du term
+- 1.1 Comprendre le modèle LDA + Affiner le résultat en utilisant tf-idf au lieu de présence/absence du term 
 - 1.2 Reprendre les terms identifiés et re-requêter dans google
 
 #### Objectif 2 : classer le nouveau document par topic 
