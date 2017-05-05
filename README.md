@@ -19,10 +19,10 @@ La base, une fois créée, seront utilisée pour démarrer l'analyse. Dans cette
 #### Objectif 2 : classer le nouveau document par topic (si le temps le permettre)
 
 ## Planification, répartition du travail:
-1. Collection de données + traitement de données:Nirina
-2. Analyse de données + traitement de données  : kim et anthony
-  1. Objectif 1.1 => kim
-  2. Objectif 1.2 => Anthony
+Markup : 1. Collection de données + traitement de données:Nirina
+         2. Analyse de données + traitement de données  : kim et anthony
+            1. Objectif 1.1 => kim
+            2. Objectif 1.2 => Anthony
 
 ## Fonctionnalités / cas d’utilisation :
 
