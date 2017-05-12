@@ -1,0 +1,31 @@
+{
+	"topics" : [{
+			"name" : "Topic 1",
+			"keywords" : ["big data", "ice cream"],
+			"numberOfResults" : 10
+		}, {
+			"name" : "Topic 2",
+			"keywords" : ["web mining", "chocolate cookies"],
+			"numberOfResults" : 5
+		}, {
+			"name" : "Topic 3",
+			"keywords" : ["data analytics", "data visualisation"],
+			"numberOfResults" : 4
+		}],
+	"results" : [{
+			"title" : "Data mining found in woods",
+			"excerpt" : "As it currently stands, this question is not a good fit for our Q&A format. We expect answers to be supported by facts, references, or expertise, but this ...",
+			"url" : "https://google.com",
+			"topics" : ["Topic 1", "Topic 3"]
+		}, {
+			"title" : "Tiger woods buys a new bicycle",
+			"excerpt" : "As it currently stands, this question is not a good fit for our Q&A format. We expect answers to be supported by facts, references, or expertise, but this ...",
+			"url" : "https://google.com",
+			"topics" : ["Topic 2"]
+		}, {
+			"title" : "Web mining wins the eclections",
+			"excerpt" : "As it currently stands, this question is not a good fit for our Q&A format. We expect answers to be supported by facts, references, or expertise, but this ...",
+			"url" : "https://google.com",
+			"topics" : ["Topic 3"]
+		}]
+}

@@ -1,4 +1,4 @@
-package main.java.com.msengineering.web.topics;
+package com.msengineering.web.topics;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +15,7 @@ public class Collect_Data {
     	//System.out.println(args.length);
     	
     	/*
-    	 * J'ai ajouté des arguments (les requêtes) dans "Run Configuration".
+    	 * J'ai ajoutï¿½ des arguments (les requï¿½tes) dans "Run Configuration".
     	 */
     	System.out.println("LISTE DES REQUETES:");
     	System.out.println("====================");
@@ -36,7 +36,7 @@ public class Collect_Data {
       int count = 1;
       try {
     	  // Rediriger les resultats dans un fichier
-    	  File ff=new File("C:\\Users\\Nirina\\Resultat.txt"); // définir l'arborescence
+    	  File ff=new File("C:\\Users\\Nirina\\Resultat.txt"); // dï¿½finir l'arborescence
     	  ff.createNewFile();
     	  FileWriter fwrite =new FileWriter(ff);
     	  //write = new FileWriter ("Fichier.txt");
