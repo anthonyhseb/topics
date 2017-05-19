@@ -26,6 +26,9 @@ La base, une fois créée, seront utilisée pour démarrer l'analyse. Dans cette
    
 ## Fonctionnalités / cas d’utilisation :
 
+## Etat d'avancement
+1. Developpement d'une interface web pour le client.
+   1.1 Techniques: HTML, CSS, JavaScript, AJAX, JSON 
 
 ## Techniques, algorithmes et outils utilisés:
 1. Partie de collection de données: Nirina
