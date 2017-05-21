@@ -1,25 +1,16 @@
 '''
 Created on 16 mai 2017
-
 @author: kimtaing
 '''
 from googlesearch.googlesearch import GoogleSearch
 import re
-import unicodedata
-
-import sys
-
 from langdetect import detect
-
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords 
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import string
-from itertools import islice
-
-import gensim
-from gensim import corpora, models, similarities
+from gensim import corpora, models
 from six import iteritems
  
 # ========================================================================================
@@ -29,15 +20,18 @@ from six import iteritems
 def googleSearch(query,num_results):
     response = GoogleSearch().search(query, num_results = num_results)
     doc_complete = []
+    urls=[]
+    titles=[]
     for result in response.results:
         if (result.getText() is not None and langdetect(result.getText())=='en'):
             doc_complete.append(re.sub("\s+"," " , result.getText()))
-    return doc_complete
+            urls.append(result.url)
+            titles.append(result.title)
+    return doc_complete,urls,titles
 
 # langue detection
 def langdetect(txt):
     return detect(txt)
-
 
 def clean(doc):
     # cleaning and procesing data
@@ -61,7 +55,7 @@ def clean(doc):
     stemmed_tokens = [p_stemmer.stem(i) for i in punc_free]
     
     # lemm tokens
-    normalized = [lemma.lemmatize(word) for word in punc_free]
+    normalized = [lemma.lemmatize(word) for word in stemmed_tokens]
     
     return normalized
 
@@ -78,7 +72,7 @@ def ngrams(tokens, n):
     return grams
 
 # ================= Model ==============
-def gettfidf(doc_term_matrix):
+'''def gettfidf(doc_term_matrix):
     tfidf = models.TfidfModel(doc_term_matrix) # step 1 -- initialize a model
     corpus_tfidf = tfidf[doc_term_matrix]
     return corpus_tfidf
@@ -86,10 +80,10 @@ def gettfidf(doc_term_matrix):
 def Lsi(corpus_tfidf,dictionary,nbtopic,num_words):
     lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=nbtopic) # initialize an LSI transformation
     return lsi
-
+'''
 def LDA(doc_term_matrix,dictionary,nbtopic,num_words):
     # Creating the object for LDA model using gensim library
-    Lda = gensim.models.ldamodel.LdaModel
+    #Lda = gensim.models.ldamodel.LdaModel
     # Running and Trainign LDA model on the document term matrix.
     ldamodel = models.LdaModel(doc_term_matrix, num_topics=nbtopic, id2word = dictionary, passes=50)
     #print(ldamodel)
@@ -105,32 +99,32 @@ def topics_toArray(topics):
     for i,topic in enumerate(topics):
         print "topic %s : %s" %(i,topic[1])
 
-def topics_toList(topics):
+def topics_toList(topics,nbdocs_bytopic):
     topics_j=[]
     for i,topic in enumerate(topics):
         topic_j={}
-        topic_j["name"]="topic "+str(i)
+        topic_j["name"]="topic_"+str(i)
         keywords=[]
         terms=re.compile(r'[*+]+').split(topic[1])
         for t,term in enumerate(terms):
             if not isfloat(term):
                 keywords.append(str(term))
         topic_j["keywords"]=keywords
-        
+        topic_j["numberOfResults"]=nbdocs_bytopic["topic_"+str(i)]
         topics_j.append(topic_j)
     return topics_j
 
 def isfloat(value):
-  try:
-    float(value)
-    return True
-  except:
-    return False
+    try:
+        float(value)
+        return True
+    except:
+        return False
 
-def get_topics(query):
+def get_infos(query):
     # google seach
     num_results_search=10
-    doc_complete=googleSearch(query,num_results_search)
+    doc_complete,urls,titles=googleSearch(query,num_results_search)
     
     # cleaning + split in ngrams
     n_gram=3
@@ -149,36 +143,61 @@ def get_topics(query):
     #parameter for model 
     nbtopic=5
     num_words=3
-
     #run model
     if len([x for x in doc_term_matrix if x != []]) >0:
         ldamodel=LDA(doc_term_matrix,dictionary,nbtopic,num_words)
         topics=ldamodel.print_topics(num_topics=nbtopic, num_words=num_words)
-        return topics_toList(topics)
         
+    
+    results=[]   
+    nbdocs_bytopic={}; 
+    for i,doc in enumerate(doc_term_matrix):
+        result={}
+        result["title"]=titles[i]
+        result["url"]=urls[i]
+        result["excerpt"]=doc_complete[i][:50]
+        topics_list=ldamodel.get_document_topics(doc)
+        topics_bydoc=[]
+        for i,topic in enumerate(topics_list):
+            topics_bydoc.append("topic_"+str(i))
+            key ="topic_"+str(i)
+            if key in nbdocs_bytopic:
+                nbdocs_bytopic[key]=nbdocs_bytopic[key]+1
+            else:
+                nbdocs_bytopic["topic_"+str(i)]=1
+        result["topics"]=topics_bydoc 
+        results.append(result)
+    
+    
+        
+    return topics_toList(topics,nbdocs_bytopic),results
+    
 
 # ========================================================================================
 # Mains
 # ========================================================================================
 
-topics=get_topics("data analytic")
-print topics
+"""
+topics,docs=get_infos("data analytic")
 
+for i,t in enumerate(topics):
+    print t
+      
+for d in docs:
+    print d
 # search info from net
 
-"""
-
-topics=get_topics("data analytic")
-print topics
+print topics_bydoc
 
 
 
-queries = ["data analytic","data visualization","network analysis"]
+
+queries = ["data analytic"]
 for i, query in enumerate(queries):
     print "==============================", query ,"=============================="
   
     num_results_search=10
-    doc_complete=googleSearch(query,num_results_search)
+    doc_complete,urls,titles=googleSearch(query,num_results_search)
     '''for i in range(2): #range(len(doc_complete)):
         u=doc_complete[i]
         print "============================== doc", i,"======================================================"
@@ -220,8 +239,21 @@ for i, query in enumerate(queries):
         ldamodel=LDA(doc_term_matrix,dictionary,nbtopic,num_words)
         topics=ldamodel.print_topics(num_topics=nbtopic, num_words=num_words)
         print_topics(topics)
-        print "\n*** topic rate by doc ***"
-        for i,doc in enumerate(doc_term_matrix):
-            print "===> doc ",i," :"
-            print(ldamodel.get_document_topics(doc))
-"""
+        
+    
+    results=[]   
+    for i,doc in enumerate(doc_term_matrix):
+        result={}
+        result["title"]=titles[i]
+        result["url"]=urls[i]
+        result["excerpt"]=doc_complete[i][:50]
+        topics_list=ldamodel.get_document_topics(doc)
+        topics_bydoc=[]
+        for i,topic in enumerate(topics_list):
+            topics_bydoc.append("topic_"+str(i))
+        result["topics"]=topics_bydoc 
+        results.append(result)
+    for i,r in enumerate(results):
+        print r
+    
+"""    
