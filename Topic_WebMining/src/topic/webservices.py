@@ -17,12 +17,13 @@ topic={"name" : "Topic 3",
         "numberOfResults" : 4}
 topics.append(topic)
 '''
+import os.path
 from topic import topics
 #topics,docs=topics.get_infos("data mining")
 
 #[topics for i,topics in enumerate(topics)]
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 #from flask import abort
 #from flask import make_response
 
@@ -41,6 +42,16 @@ def get_topics():
 #@app.route('/api/v1.0/results', methods=['GET'])
 #def get_docs():
 #    return jsonify({'results': docs})
+
+@app.route('/index.html', methods=['GET'])
+def send_index():
+    print "serving index.html from: " + os.path.realpath(".")
+    return send_from_directory(".", "index.html")
+
+@app.route('/newcss.css', methods=['GET'])
+def send_css():
+    print "serving index.html from: " + os.path.realpath(".")
+    return send_from_directory(".", "newcss.css")
 
 if __name__ == '__main__':
     app.run(debug=True)

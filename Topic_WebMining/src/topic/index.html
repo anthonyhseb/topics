@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Interface Web</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="newcss.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    </head>
+    <body>
+        <!--div id="searchbar"-->
+        <form method="get" class="form-wrapper cf" action="javascript:void(0)"><!--Dans action sera appelé le programme-->
+            <input id="query-field" type="text" placeholder="Rechercher ici..." name="query"  />
+            <button id="bouton" >Rechercher</button>
+        </form>
+        <div id="topics"> </div>
+        <div id="results"> </div>
+        <script>
+            function termUrl(query) {
+                return ".?query=" +encodeURIComponent(query);
+            }
+            function querystring(key) {
+                var re=new RegExp('(?:\\?|&)'+key+'=(.*?)(?=&|$)','gi');
+                var r=[], m;
+                while ((m=re.exec(document.location.search)) != null) r[r.length]=m[1];
+                return decodeURIComponent(r);
+             }
+
+             function runQuery() {
+                 var query = query || $('#query-field').val();
+                $.getJSON('http://localhost:5000/api/v1.0/topics?n_grame=2&query=' + encodeURIComponent(query) , function (data) {
+                    var divs = ''
+                    for (topic of data.topics) {
+                        var div = '<div class="topic"> \
+                        <h3><a href="' + termUrl(topic.name) + '">' + topic.name + '</a></h3>\
+                        <div class="topic-count">' + topic.numberOfResults + '</div>\
+                        <ul class="keywords">'
+                        for (keyword of topic.keywords) {
+                            div += '<li><a href="' + termUrl(keyword) + '">' + keyword + '</a></li>'
+                        }
+                        div += '</ul>\
+                        </div>'
+
+                        divs += div;
+                    }
+                    $('#topics')[0].innerHTML = divs;
+
+
+                    var divs = ''
+                    for (result of data.results) {
+                        var div = '<div class="result"> \
+                        <h3><a href="' + result.url + '">' + result.title + '</a></h3>\
+                        <p>' + result.excerpt + '</p>\
+                        <ul class="topics">'
+                        for (topic of result.topics) {
+                            div += '<li><a href="' + termUrl(topic) + '">' + topic + '</a></li>'
+                        }
+                        div += '</ul>\
+                        </div>'
+                        divs += div;
+                    }
+                    $('#results')[0].innerHTML = divs;
+                    });
+
+                }
+            // $("#sample_response").click(function(){
+            // var resultat ="Coucou";
+            //var i = 0;
+            $(document).ready(function () {
+                var query = querystring('query')
+                if (query != '') {
+                    runQuery(query)
+                }
+
+                $('#bouton').click(function() {
+                        window.history.pushState(null, null, ".?query=" +encodeURIComponent($('#query-field').val()));
+                        runQuery();
+                    });
+                });
+
+        </script>
+    </body>
+</html>
