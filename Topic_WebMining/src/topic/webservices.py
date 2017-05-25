@@ -18,25 +18,26 @@ topic={"name" : "Topic 3",
 topics.append(topic)
 '''
 from topic import topics
-topics,docs=topics.get_infos("data analytic")
+#topics,docs=topics.get_infos("data mining")
 
 #[topics for i,topics in enumerate(topics)]
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 #from flask import abort
 #from flask import make_response
 
 app = Flask(__name__)
 
-#curl -i http://localhost:5000/api/v1.0/tasks
+#curl -i http://localhost:5000/api/v1.0/topics
 @app.route('/api/v1.0/topics', methods=['GET'])
 def get_topics():
-    return jsonify({'topics': topics})
+    topicz,docs=topics.get_infos(request.args.get('query'))
+    return jsonify({'topics': topicz, 'results' : docs})
 
 #curl -i http://localhost:5000/api/v1.0/tasks
-@app.route('/api/v1.0/results', methods=['GET'])
-def get_docs():
-    return jsonify({'results': docs})
+#@app.route('/api/v1.0/results', methods=['GET'])
+#def get_docs():
+#    return jsonify({'results': docs})
 
 if __name__ == '__main__':
     app.run(debug=True)
