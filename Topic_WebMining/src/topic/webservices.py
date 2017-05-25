@@ -28,10 +28,13 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-#curl -i http://localhost:5000/api/v1.0/topics
+#curl -i "http://localhost:5000/api/v1.0/topics?query=data%20mining&n_grame=2"
+
 @app.route('/api/v1.0/topics', methods=['GET'])
 def get_topics():
-    topicz,docs=topics.get_infos(request.args.get('query'))
+    print request.args.get('query')
+    print int(request.args.get('n_grame'))
+    topicz,docs=topics.get_infos(request.args.get('query'),int(request.args.get('n_grame')))
     return jsonify({'topics': topicz, 'results' : docs})
 
 #curl -i http://localhost:5000/api/v1.0/tasks

@@ -23,10 +23,13 @@ def googleSearch(query,num_results):
     urls=[]
     titles=[]
     for result in response.results:
-        if (result.getText() is not None and langdetect(result.getText())=='en'):
-            doc_complete.append(re.sub("\s+"," " , result.getText()))
-            urls.append(result.url)
-            titles.append(result.title)
+        try:
+            if (result.getText() is not None and langdetect(result.getText())=='en'):
+                doc_complete.append(re.sub("\s+"," " , result.getText()))
+                urls.append(result.url)
+                titles.append(result.title)
+        except:
+            print "failed to fetch text for page " + result.url
     return doc_complete,urls,titles
 
 # langue detection
@@ -72,21 +75,9 @@ def ngrams(tokens, n):
     return grams
 
 # ================= Model ==============
-'''def gettfidf(doc_term_matrix):
-    tfidf = models.TfidfModel(doc_term_matrix) # step 1 -- initialize a model
-    corpus_tfidf = tfidf[doc_term_matrix]
-    return corpus_tfidf
-
-def Lsi(corpus_tfidf,dictionary,nbtopic,num_words):
-    lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=nbtopic) # initialize an LSI transformation
-    return lsi
-'''
 def LDA(doc_term_matrix,dictionary,nbtopic,num_words):
-    # Creating the object for LDA model using gensim library
-    #Lda = gensim.models.ldamodel.LdaModel
     # Running and Trainign LDA model on the document term matrix.
     ldamodel = models.LdaModel(doc_term_matrix, num_topics=nbtopic, id2word = dictionary, passes=50)
-    #print(ldamodel)
     # words by topic
     return ldamodel
 
@@ -121,13 +112,13 @@ def isfloat(value):
     except:
         return False
 
-def get_infos(query):
+def get_infos(query,n_grame):
     # google seach
     num_results_search=10
     doc_complete,urls,titles=googleSearch(query,num_results_search)
-    
+    print n_grame
     # cleaning + split in ngrams
-    n_gram=3
+    n_gram=n_grame
     doc_clean = [ngrams(clean(doc),n_gram) for doc in doc_complete]
     
     # Creating the term dictionary of our courpus, where every unique term is assigned an index. 
@@ -156,7 +147,7 @@ def get_infos(query):
         result["title"]=titles[i]
         result["url"]=urls[i]
         result["excerpt"]=doc_complete[i][:50]
-        topics_list=ldamodel.get_document_topics(doc)
+        topics_list=topics#ldamodel.get_document_topics(doc)
         topics_bydoc=[]
         for i,topic in enumerate(topics_list):
             topics_bydoc.append("topic_"+str(i))
@@ -176,8 +167,16 @@ def get_infos(query):
 # ========================================================================================
 # Mains
 # ========================================================================================
-
 """
+topics,docs=get_infos("data scientist",2)
+
+for i,t in enumerate(topics):
+    print t
+      
+for d in docs:
+    print d
+
+
 topics,docs=get_infos("data analytic")
 
 for i,t in enumerate(topics):
