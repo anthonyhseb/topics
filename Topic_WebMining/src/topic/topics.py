@@ -12,11 +12,13 @@ from nltk.stem.porter import PorterStemmer
 import string
 from gensim import corpora, models
 from six import iteritems
+import operator
+from titlecase import titlecase
  
 # ========================================================================================
 # functions
 # ========================================================================================
-# geet data from google
+# get data from google
 def googleSearch(query,num_results):
     response = GoogleSearch().search(query, num_results = num_results)
     doc_complete = []
@@ -41,29 +43,32 @@ def clean(doc):
     tokenizer = RegexpTokenizer(r'\w+')
     stop = set(stopwords.words('english'))
     exclude = set(string.punctuation) 
-    # Create p_stemmer of class PorterStemmer
+    # Create p_stemmer of class PorterStemmer and lemma 
     p_stemmer = PorterStemmer()
     lemma = WordNetLemmatizer()
+    
     # clean and tokenize document string
     raw = doc.lower()
     tokens = tokenizer.tokenize(raw)
-    
+     # remove digits from tokens
+    tokens_str= [i for i in tokens if not i.isdigit()]
+   
     # remove stop words from tokens
-    stopped_tokens = [i for i in tokens if not i in stop]
+    stopped_tokens = [i for i in tokens_str if not i in stop]
     
     # remove punc_free from tokens
     punc_free = [ch for ch in stopped_tokens if ch not in exclude]
     
     # stem tokens
-    stemmed_tokens = [p_stemmer.stem(i) for i in punc_free]
+    # stemmed_tokens = [p_stemmer.stem(i) for i in punc_free]
     
     # lemm tokens
-    normalized = [lemma.lemmatize(word) for word in stemmed_tokens]
+    # normalized = [lemma.lemmatize(word) for word in stemmed_tokens]
     
-    return normalized
+    return punc_free
 
 def ngrams(tokens, n):
-    # reconstruction de la chaine
+    # reconstruction of string
     if n==1:
         grams=tokens
     else :
@@ -90,31 +95,50 @@ def topics_toArray(topics):
     for i,topic in enumerate(topics):
         print "topic %s : %s" %(i,topic[1])
 
-def topics_toList(topics,nbdocs_bytopic):
-    topics_j=[]
-    for i,topic in enumerate(topics):
-        topic_j={}
-        topic_j["name"]="topic_"+str(i)
-        keywords=[]
-        terms=re.compile(r'[*+]+').split(topic[1])
-        for t,term in enumerate(terms):
-            if not isfloat(term):
-                keywords.append(str(term))
-        topic_j["keywords"]=keywords
-        topic_j["numberOfResults"]=nbdocs_bytopic["topic_"+str(i)]
-        topics_j.append(topic_j)
-    return topics_j
-
 def isfloat(value):
     try:
         float(value)
         return True
     except:
         return False
+    
+# Print first part of result in json file : 
+# for each topic, print topic name, terms of topic, number of documents having this topic 
+def topics_toList(topics,nbdocs_bytopic,topic_names):
+    topics_j=[]
+    for i,topic in enumerate(topics):
+        topic_j={}
+        topic_j["name"]=topic_names[i]
+        keywords=[]
+        terms=re.compile(r'[*+]+').split(topic[1])
+        for t,term in enumerate(terms):
+            if not isfloat(term):
+                keywords.append(term.replace('"',''))
+        topic_j["keywords"]=keywords
+        topic_j["numberOfResults"]=nbdocs_bytopic[topic_names[i]]
+        topics_j.append(topic_j)
+    return topics_j
 
-def get_infos(query,n_grame):
+def parseNgramDict(termsoftopic):
+    terms=re.compile(r'[*+]+').split(termsoftopic)
+    ngram=None
+    coeff=None
+    dictgram={}
+    for t,term in enumerate(terms):
+        if isfloat(term):
+            coeff=float(term)
+        else:
+            ngram=term.replace('"','')
+            dictgram[ngram]=coeff
+    return dictgram
+            
+        
+
+# Print second part of result in json file : 
+# for each document, print doc title, doc url, doc resume (first n words), list of topics of doc 
+def get_infos(query,n_grame,num_docs_search,nb_topic_search):
     # google seach
-    num_results_search=10
+    num_results_search=num_docs_search
     doc_complete,urls,titles=googleSearch(query,num_results_search)
     print n_grame
     # cleaning + split in ngrams
@@ -132,63 +156,85 @@ def get_infos(query,n_grame):
     doc_term_matrix = [dictionary.doc2bow(doc) for doc in doc_clean]
     
     #parameter for model 
-    nbtopic=5
-    num_words=3
+    nbtopic=nb_topic_search
+    num_words=5
+    num_words_resume=50
     #run model
     if len([x for x in doc_term_matrix if x != []]) >0:
         ldamodel=LDA(doc_term_matrix,dictionary,nbtopic,num_words)
-        topics=ldamodel.print_topics(num_topics=nbtopic, num_words=num_words)
+        topics=ldamodel.print_topics(num_topics=nbtopic)
+        print topics
         
+    topicsDicts=[]
+    for topic in topics:
+        topicsDicts.append(parseNgramDict(topic[1]))
+    
+    print topicsDicts
+    
+    topic_names=[]
+    topicDictsSorted=[]
+    for topicDict in topicsDicts:
+        topicDictsSorted.append(sorted(topicDict.items(), key=operator.itemgetter(1), reverse=True))
+    print "topicDictsSorted" , topicDictsSorted
+    
+    for i,topic in enumerate(topics):
+        topic_names.append("Topic " + str(i))
+        for key, value in topicDictsSorted[i]:
+            in_others = False
+            for j in range(len(topics)):
+                if j==i: continue
+                other_dict = topicsDicts[j]
+                if key in other_dict:
+                    in_others = True
+                    break
+            if not in_others:
+                topic_names[i]=key
+                break
+    print topic_names    
     
     results=[]   
-    nbdocs_bytopic={}; 
+    nbdocs_bytopic={};
+    for t,topic in enumerate(topics):
+        key =topic_names[t]
+        nbdocs_bytopic[key]=0
+     
     for i,doc in enumerate(doc_term_matrix):
         result={}
         result["title"]=titles[i]
         result["url"]=urls[i]
-        result["excerpt"]=doc_complete[i][:50]
-        topics_list=topics#ldamodel.get_document_topics(doc)
+        result["excerpt"]=doc_complete[i][:num_words_resume]
+        # print "doc ==> ",ldamodel.get_document_topics(doc)
+        topics_list=ldamodel.get_document_topics(doc)
+        print "topics_list : ",topics_list
         topics_bydoc=[]
         for i,topic in enumerate(topics_list):
-            topics_bydoc.append("topic_"+str(i))
-            key ="topic_"+str(i)
+            topics_bydoc.append(topic_names[i])
+            key =topic_names[i]
             if key in nbdocs_bytopic:
                 nbdocs_bytopic[key]=nbdocs_bytopic[key]+1
             else:
-                nbdocs_bytopic["topic_"+str(i)]=1
+                nbdocs_bytopic[key]=1
         result["topics"]=topics_bydoc 
         results.append(result)
-    
-    
         
-    return topics_toList(topics,nbdocs_bytopic),results
+    return topics_toList(topics,nbdocs_bytopic,topic_names),results
+
     
 
 # ========================================================================================
-# Mains
+# Mains (tests local) 
+# must be desactived when lauch in webservice mode
 # ========================================================================================
+if __name__ == "__main__":
+    topics,docs=get_infos("data mining",2,5,3)
+    
+    for i,t in enumerate(topics):
+        print t
+          
+    for d in docs:
+        print d
+
 """
-topics,docs=get_infos("data scientist",2)
-
-for i,t in enumerate(topics):
-    print t
-      
-for d in docs:
-    print d
-
-
-topics,docs=get_infos("data analytic")
-
-for i,t in enumerate(topics):
-    print t
-      
-for d in docs:
-    print d
-# search info from net
-
-print topics_bydoc
-
-
 
 
 queries = ["data analytic"]

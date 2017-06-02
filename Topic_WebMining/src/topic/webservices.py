@@ -3,6 +3,7 @@ Created on 17 mai 2017
 
 @author: kimtaing
 
+# exemple of json file final
 topics=[]
 topic={"name" : "Topic 2",
         "keywords" : ["big data", "ice cream"],
@@ -19,23 +20,20 @@ topics.append(topic)
 '''
 import os.path
 from topic import topics
-#topics,docs=topics.get_infos("data mining")
-
-#[topics for i,topics in enumerate(topics)]
 
 from flask import Flask, jsonify, request, send_from_directory
-#from flask import abort
-#from flask import make_response
 
 app = Flask(__name__)
 
-#curl -i "http://localhost:5000/api/v1.0/topics?query=data%20mining&n_grame=2"
-
+#curl -i "http://localhost:5000/api/v1.0/topics?query=data%20mining&n_gram=2"
 @app.route('/api/v1.0/topics', methods=['GET'])
 def get_topics():
-    print request.args.get('query')
-    print int(request.args.get('n_grame'))
-    topicz,docs=topics.get_infos(request.args.get('query'),int(request.args.get('n_grame')))
+    print "query :", request.args.get('query')
+    print "n_gram :" ,request.args.get('n_gram')
+    print "nb_docs : " , request.args.get('nb_docs')
+    print "nb_topics : " , request.args.get('nb_topics')
+    topicz,docs=topics.get_infos(request.args.get('query'),int(request.args.get('n_gram'))
+                                 ,int(request.args.get('nb_docs')),int(request.args.get('nb_topics')))
     return jsonify({'topics': topicz, 'results' : docs})
 
 #curl -i http://localhost:5000/api/v1.0/tasks

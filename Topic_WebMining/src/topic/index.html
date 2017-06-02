@@ -18,7 +18,13 @@ and open the template in the editor.
         <form method="get" class="form-wrapper cf" action="javascript:void(0)"><!--Dans action sera appelé le programme-->
             <input id="query-field" type="text" placeholder="Rechercher ici..." name="query"  />
             <button id="bouton" >Rechercher</button>
+
+            
         </form>
+
+        number of n_gram : <input id="n_gram" type="text" placeholder="1,2,3..." name="n_gram"  />
+        number of docs : <input id="nb_docs" type="text" placeholder="1,2,3..." name="nb_docs"  />
+        number of topics : <input id="nb_topics" type="text" placeholder="1,2,3..." name="nb_topics"  />
         <div id="topics"> </div>
         <div id="results"> </div>
         <script>
@@ -34,7 +40,10 @@ and open the template in the editor.
 
              function runQuery() {
                  var query = query || $('#query-field').val();
-                $.getJSON('http://localhost:5000/api/v1.0/topics?n_grame=2&query=' + encodeURIComponent(query) , function (data) {
+                 var n_gram=$('#n_gram').val();
+                 var nb_docs=$('#nb_docs').val();
+                 var nb_topics=$('#nb_topics').val();
+                $.getJSON('http://localhost:5000/api/v1.0/topics?nb_docs=' + encodeURIComponent(nb_docs)+'&nb_topics=' + encodeURIComponent(nb_topics)+'&n_gram=' + encodeURIComponent(n_gram)+'&query=' + encodeURIComponent(query) , function (data) {
                     var divs = ''
                     for (topic of data.topics) {
                         var div = '<div class="topic"> \
