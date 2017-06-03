@@ -21,15 +21,24 @@ and open the template in the editor.
 
             
         </form>
-
-        number of n_gram : <input id="n_gram" type="text" placeholder="1,2,3..." name="n_gram"  />
-        number of docs : <input id="nb_docs" type="text" placeholder="1,2,3..." name="nb_docs"  />
-        number of topics : <input id="nb_topics" type="text" placeholder="1,2,3..." name="nb_topics"  />
-        <div id="topics"> </div>
-        <div id="results"> </div>
+         <div class="loader hidden"></div> 
+        <div class="advanced-settings">
+	        <label>Number of n-grams : <input id="n_gram" type="text" value="2" name="n_gram"  /></label>
+	        <label>Number of docs : <input id="nb_docs" type="text" value="30" name="nb_docs"  /></label>
+	        <label>Number of topics : <input id="nb_topics" type="text" value="3" name="nb_topics"  /></label>
+	    </div>
+        <div id="topics" class="empty"> </div>
+        <div id="results" class="empty"> </div>
         <script>
             function termUrl(query) {
-                return ".?query=" +encodeURIComponent(query);
+                 var query = query || $('#query-field').val();
+                 var n_gram = n_gram || $('#n_gram').val() || 2;
+                 var nb_docs = nb_docs || $('#nb_docs').val() || 30;
+                 var nb_topics = nb_topics || $('#nb_topics').val() || 3;
+                return "/index.html?query=" + encodeURIComponent(query)
+                			+ "&n_gram" + encodeURIComponent(n_gram)
+                			+ "&nb_docs" + encodeURIComponent(nb_docs)
+                			+ "&nb_topics" + encodeURIComponent(nb_topics);
             }
             function querystring(key) {
                 var re=new RegExp('(?:\\?|&)'+key+'=(.*?)(?=&|$)','gi');
@@ -38,12 +47,13 @@ and open the template in the editor.
                 return decodeURIComponent(r);
              }
 
-             function runQuery() {
+             function runQuery(query, n_gram, nb_docs, nb_topics) {
+             	appBusy();
                  var query = query || $('#query-field').val();
-                 var n_gram=$('#n_gram').val();
-                 var nb_docs=$('#nb_docs').val();
-                 var nb_topics=$('#nb_topics').val();
-                $.getJSON('http://localhost:5000/api/v1.0/topics?nb_docs=' + encodeURIComponent(nb_docs)+'&nb_topics=' + encodeURIComponent(nb_topics)+'&n_gram=' + encodeURIComponent(n_gram)+'&query=' + encodeURIComponent(query) , function (data) {
+                 var n_gram = n_gram || $('#n_gram').val() || 2;
+                 var nb_docs = nb_docs || $('#nb_docs').val() || 30;
+                 var nb_topics = nb_topics || $('#nb_topics').val() || 3;
+                $.getJSON('/api/v1.0/topics?nb_docs=' + encodeURIComponent(nb_docs) + '&nb_topics=' + encodeURIComponent(nb_topics) + '&n_gram=' + encodeURIComponent(n_gram)+'&query=' + encodeURIComponent(query) , function (data) {
                     var divs = ''
                     for (topic of data.topics) {
                         var div = '<div class="topic"> \
@@ -59,6 +69,7 @@ and open the template in the editor.
                         divs += div;
                     }
                     $('#topics')[0].innerHTML = divs;
+                    $('#topics').removeClass('empty');
 
 
                     var divs = ''
@@ -75,20 +86,38 @@ and open the template in the editor.
                         divs += div;
                     }
                     $('#results')[0].innerHTML = divs;
+                    $('#results').removeClass('empty');
+                    appReady();
                     });
 
                 }
-            // $("#sample_response").click(function(){
-            // var resultat ="Coucou";
-            //var i = 0;
+                
+              	function appReady() {
+              		$('.loader').addClass('hidden');
+              	}
+              	
+              	function appBusy() {
+              		$('.loader').removeClass('hidden');
+              	}
+                
             $(document).ready(function () {
                 var query = querystring('query')
+                var n_gram = querystring('n_gram') || 2
+                var nb_docs = querystring('nb_docs') || 30
+                var nb_topics = querystring('nb_topics') || 3
                 if (query != '') {
-                    runQuery(query)
+                	$('#query-field').val(query)
+                    runQuery(query, n_gram, nb_docs, nb_topics)
                 }
 
                 $('#bouton').click(function() {
-                        window.history.pushState(null, null, ".?query=" +encodeURIComponent($('#query-field').val()));
+		                 var n_gram=$('#n_gram').val();
+		                 var nb_docs=$('#nb_docs').val();
+		                 var nb_topics=$('#nb_topics').val();
+                        window.history.pushState(null, null, "/index.html?query=" + encodeURIComponent($('#query-field').val())
+                        + "&n_gram=" + encodeURIComponent($('#n_gram').val())
+                        + "&nb_docs=" + encodeURIComponent($('#nb_docs').val())
+                        + "&nb_topics=" + encodeURIComponent($('#nb_topics').val()));
                         runQuery();
                     });
                 });
