@@ -3,14 +3,14 @@ Classification des résultats d'un moteur de recherche
 
 ## Contexte et objectifs du projet:
 L’objectif du projet consiste à analyser les pages web pour les classer dans différents thèmes. 
-Nous allons procéder en deux étapes. La première étape consiste à collectionner les pages web. Ces dernières sont les N meilleurs résultats que le moteur de recherche google génère pour répondre à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents topics dont le nombre de thèmes peut est paramétré. 
+Nous allons procéder en deux étapes. La première étape consiste à collectionner les pages web qui sont les N meilleurs résultats que le moteur de recherche google génère en répondant à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents thèmes dont le nombre peut est paramétré. 
 
 ## Données (sources, quantité, évtl. pré-traitement, description):
 ### Phase de collection de données:
-La source de nos données sont les résultats du moteur de recherche. Le processus consiste à envoyer une requête au moteur de recherche et récupérer les N meilleurs pages web générées par le moteur de recherche pour les classer. Dans cette étape, le premier travail de "cleaninig" est réalisé pour enlever toutes les parties inutiles(ex: publicité, balises html). 
+La source de nos données sont les résultats du moteur de recherche. Dans cette étape, le premier travail de "cleaninig" est réalisé pour enlever toutes les parties inutiles(ex: publicité, balises html). 
 
 ### Phase d'analyse de données :
-les données (pages web) récupérées par la partie précédente, seront utilisées pour démarrer l'analyse. Dans cette phase, on va nettoyer ces données en appliquant les différents filtres : enlever le stopword, gestion de stemming, de lemmazation, de tokenization, etc.
+Les données (pages web) récupérées par la partie précédente, seront utilisées pour démarrer l'analyse. Dans cette phase, on va nettoyer les données en appliquant les différents filtres : gestion de stopword, de stemming, de lemmazation, de tokenization, etc.
 Par la suite, nous appliquons l'alogorithme Latent Dirichlet Allocation (LDA) sur ces données nettoyées pour identifier les différentes thèmes.
 
 #### Objectifs :
