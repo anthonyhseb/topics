@@ -2,8 +2,8 @@
 Classification des résultats d'un moteur de recherche
 
 ## Contexte et objectifs du projet:
-L’objectif du projet consiste à analyser les pages web pour les classer dans différents themes. 
-Nous allons procéder en deux étapes. La première étape consiste à collectionner les pages web. Ces dernières sont les N meilleurs résultats que le moteur de recherche google génère pour répondre à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents topics dont le nombre de themes peut est paramétré. 
+L’objectif du projet consiste à analyser les pages web pour les classer dans différents thèmes. 
+Nous allons procéder en deux étapes. La première étape consiste à collectionner les pages web. Ces dernières sont les N meilleurs résultats que le moteur de recherche google génère pour répondre à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents topics dont le nombre de thèmes peut est paramétré. 
 
 ## Données (sources, quantité, évtl. pré-traitement, description):
 ### Phase de collection de données:
@@ -11,14 +11,14 @@ La source de nos données sont les résultats du moteur de recherche. Le process
 
 ### Phase d'analyse de données :
 les données (pages web) récupérées par la partie précédente, seront utilisées pour démarrer l'analyse. Dans cette phase, on va nettoyer ces données en appliquant les différents filtres : enlever le stopword, gestion de stemming, de lemmazation, de tokenization, etc.
-Par la suite, nous appliquons l'alogorithme Latent Dirichlet Allocation (LDA) sur ces données nettoyées pour identifier les différentes themes.
+Par la suite, nous appliquons l'alogorithme Latent Dirichlet Allocation (LDA) sur ces données nettoyées pour identifier les différentes thèmes.
 
 #### Objectifs :
-- 1.1 Identifier les themes (topics) ainsi que les terms associés
-- 1.2 Classer les documents dans les themes identifiés
+- 1.1 Identifier les thèmes (topics) ainsi que les termes associés
+- 1.2 Classer les documents dans les thèmes identifiés
    
 ## Fonctionnalités / cas d’utilisation :
-L'interface permet à nos utilisateurs finaux d'effectuer des recherches comme un moteur de recherche google. Cependant, au lieu de présenter une simple liste de documents, l'interface organise les résultats en les groupant sous différents themes.
+L'interface permet à nos utilisateurs finaux d'effectuer des recherches comme un moteur de recherche google. Cependant, au lieu de présenter une simple liste de documents, l'interface organise les résultats en les groupant sous différents thèmes.
 
 
 ## Planification, répartition du travail
@@ -42,7 +42,7 @@ L'interface permet à nos utilisateurs finaux d'effectuer des recherches comme u
    2. Services REST (python Flask)
 
 ## Conclusion
-Dans le cadre du projet, nous avons été amené à utiliser l'algorithme Latent Dirichlet Allocation (LDA) qui est l'algorithme standard dans le domaine de topic analysis. Nous avons rencontré des difficultés dans le nommage des themes, que LDA n'adresse pas. Ce problème reste toujours un sujet de recherche. Nous avons proposé un algorithme simple pour accorder à chaque theme un nom unique. 
+Dans le cadre du projet, nous avons été amené à utiliser l'algorithme Latent Dirichlet Allocation (LDA) qui est l'algorithme standard dans le domaine de topic analysis. Nous avons rencontré des difficultés dans le nommage des thèmes, que LDA n'adresse pas. Ce problème reste toujours un sujet de recherche. Nous avons proposé un algorithme simple pour accorder à chaque thème un nom unique. 
 
 
 
