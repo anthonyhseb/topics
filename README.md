@@ -2,8 +2,8 @@
 Classification des résultats d'un moteur de recherche
 
 ## Contexte et objectifs du projet:
-L’objectif du projet consiste à analyser les pages web pour les classer dans différents thèmes. 
-Nous allons procéder en deux étapes. La première étape consiste à collectionner les pages web qui sont les N meilleurs résultats que le moteur de recherche google génère en répondant à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents thèmes dont le nombre peut est paramétré. 
+L’objectif du projet consiste à analyser les pages web pour les classer dans des différents thèmes. 
+Nous allons procéder en deux étapes: La première étape consiste à collectionner les pages web qui sont les N meilleurs résultats que le moteur de recherche google génère en répondant à notre requête spécifique. Dans la deuxième étape, nous classons ces pages web dans les différents thèmes dont le nombre peut est paramétré. 
 
 ## Données (sources, quantité, évtl. pré-traitement, description):
 ### Phase de collection de données:
@@ -32,14 +32,14 @@ L'interface permet à nos utilisateurs finaux d'effectuer des recherches comme u
  
 ## Techniques, algorithmes et outils utilisés:
 1. Partie de collection de données: 
-   1. Java-Jsoup: Librairie Java open source utilisée pour l'extraction et la manipulation des données dans des documents html. Cette version a été implémentée puis convertie en python. Ceci est dû au changement de language du projet en python.
-   1. Nous avons développé l'outil googlesearch (Lien : https://github.com/anthonyhseb/googlesearch) en python (version finale utilisé dans le projet)
+- Java-Jsoup: Librairie Java open source utilisée pour l'extraction et la manipulation des données dans des documents html. Cette version a été implémentée puis convertie en python. Ceci est dû au changement de language du projet en python.
+- Nous avons développé l'outil googlesearch (Lien : https://github.com/anthonyhseb/googlesearch) en python (version finale utilisé dans le projet)
 2. Partie d'analyse de données: 
-   1. Librairie NLTK pour le pré-traitement des données
-   2. librairie gensim.models.LdaModel pour analyser les données
+- Librairie NLTK pour le pré-traitement des données
+- librairie gensim.models.LdaModel pour analyser les données
 3. Partie d'interface:
-   1. Interface client web (HTML, CSS, JavaScript)
-   2. Services REST (python Flask)
+- Interface client web (HTML, CSS, JavaScript)
+- Services REST (python Flask)
 
 ## Conclusion
 Dans le cadre du projet, nous avons été amené à utiliser l'algorithme Latent Dirichlet Allocation (LDA) qui est l'algorithme standard dans le domaine de topic analysis. Nous avons rencontré des difficultés dans le nommage des thèmes, que LDA n'adresse pas. Ce problème reste toujours un sujet de recherche. Nous avons proposé un algorithme simple pour accorder à chaque thème un nom unique. 
