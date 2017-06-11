@@ -36,10 +36,6 @@ def get_topics():
                                  ,int(request.args.get('nb_docs')),int(request.args.get('nb_topics')))
     return jsonify({'topics': topicz, 'results' : docs})
 
-#curl -i http://localhost:5000/api/v1.0/tasks
-#@app.route('/api/v1.0/results', methods=['GET'])
-#def get_docs():
-#    return jsonify({'results': docs})
 
 @app.route('/index.html', methods=['GET'])
 def send_index():

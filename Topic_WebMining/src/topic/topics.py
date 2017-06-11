@@ -67,6 +67,7 @@ def clean(doc):
     
     return punc_free
 
+# tokenization in n gram
 def ngrams(tokens, n):
     # reconstruction of string
     if n==1:
@@ -86,6 +87,9 @@ def LDA(doc_term_matrix,dictionary,nbtopic,num_words):
     # words by topic
     return ldamodel
 
+# ========================================================================================
+# functions to display / load data (use for output json file later)
+# ========================================================================================
 def print_topics(topics):
     #print "======= topics======================================================================================="
     for i,topic in enumerate(topics):
@@ -131,8 +135,7 @@ def parseNgramDict(termsoftopic):
             ngram=term.replace('"','')
             dictgram[ngram]=coeff
     return dictgram
-            
-        
+
 
 # Print second part of result in json file : 
 # for each document, print doc title, doc url, doc resume (first n words), list of topics of doc 
@@ -140,7 +143,7 @@ def get_infos(query,n_grame,num_docs_search,nb_topic_search):
     # google seach
     num_results_search=num_docs_search
     doc_complete,urls,titles=googleSearch(query,num_results_search)
-    print n_grame
+    
     # cleaning + split in ngrams
     n_gram=n_grame
     doc_clean = [ngrams(clean(doc),n_gram) for doc in doc_complete]
@@ -159,6 +162,7 @@ def get_infos(query,n_grame,num_docs_search,nb_topic_search):
     nbtopic=nb_topic_search
     num_words=5
     num_words_resume=50
+    
     #run model
     if len([x for x in doc_term_matrix if x != []]) >0:
         ldamodel=LDA(doc_term_matrix,dictionary,nbtopic,num_words)
@@ -169,7 +173,7 @@ def get_infos(query,n_grame,num_docs_search,nb_topic_search):
     for topic in topics:
         topicsDicts.append(parseNgramDict(topic[1]))
     
-    print topicsDicts
+    print "topicsDicts : ", topicsDicts
     
     topic_names=[]
     topicDictsSorted=[]
@@ -190,7 +194,7 @@ def get_infos(query,n_grame,num_docs_search,nb_topic_search):
             if not in_others:
                 topic_names[i]=key
                 break
-    print topic_names    
+    print "topic_names" ,topic_names    
     
     results=[]   
     nbdocs_bytopic={};
@@ -205,7 +209,7 @@ def get_infos(query,n_grame,num_docs_search,nb_topic_search):
         result["excerpt"]=doc_complete[i][:num_words_resume]
         # print "doc ==> ",ldamodel.get_document_topics(doc)
         topics_list=ldamodel.get_document_topics(doc)
-        print "topics_list : ",topics_list
+        #print "topics_list : ",topics_list
         topics_bydoc=[]
         for i,topic in enumerate(topics_list):
             topics_bydoc.append(topic_names[i])
